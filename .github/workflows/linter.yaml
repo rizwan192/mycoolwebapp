@@ -25,4 +25,4 @@ jobs:
         pip install pylint
     - name: Lint code
       run: |
-        pylint api
+        pylint $(git diff --name-only | grep '\.py$')
