@@ -1,7 +1,7 @@
 
 from flask import Flask
 
-from api.controllers.users import users_bp, get_users
+from api.controllers.users import users_bp
 
 
 def test_get_users_success(mocker):
