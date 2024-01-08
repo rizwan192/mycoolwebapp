@@ -27,12 +27,12 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
           cd ~/mycoolwebapp && \
-          docker build -t mycoolwebapp ."
+          sudo docker build -t mycoolwebapp ."
       - name: Run Image
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
           cd ~/mycoolwebapp && \
-          docker run -p 8000:8000 mycoolwebapp"
+          sudo docker run -p 8000:8000 mycoolwebapp"
       - name: Clean Up
         run: |
          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
