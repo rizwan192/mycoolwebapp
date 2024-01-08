@@ -1,18 +1,35 @@
-name: build-and-deploy
+name: Build and Deploy
 
 on:
   push:
     branches:
       - "master"
+  workflow_dispatch:
+
+env:
+  PRIVATE_KEY: ${{secrets.MYCOOLWEBAPPPEMFILE}}
+  INSTANCE_IP: ${{secrets.VM_IP}}
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Set permissions for private key
+        run: |
+          echo "${{ env.PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+      - name: Update Repo
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
+          sudo git pull https://github.com/rizwan192/mycoolwebapp.git
 
-      - name: Set outputs
-        id: vars
-        run: echo "SHA_SHORT=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
-
+      - name: Build Image
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
+          cd ~/mycoolwebapp && \
+          docker build -t mycoolwebapp .
+      - name: Run Image
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
+          cd ~/mycoolwebapp && \
+          docker run -p 8000:8000 mycoolwebapp
