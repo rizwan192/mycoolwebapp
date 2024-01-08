@@ -1,4 +1,5 @@
 __pycache__
 pass.txt
 .env
+venv
 api/dbdata
