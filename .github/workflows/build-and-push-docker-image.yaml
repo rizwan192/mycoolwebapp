@@ -21,7 +21,7 @@ jobs:
       - name: Update Repo
         run: |
           ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
-          sudo git pull https://github.com/rizwan192/mycoolwebapp.git"
+          sudo git clone https://github.com/rizwan192/mycoolwebapp.git"
 
       - name: Build Image
         run: |
@@ -33,3 +33,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
           cd ~/mycoolwebapp && \
           docker run -p 8000:8000 mycoolwebapp"
+      - name: Clean Up
+        run: |
+         ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ env.INSTANCE_IP }} "\
+         sudo rm -rf ~/mycoolwebapp"
